@@ -13,22 +13,24 @@ const OTPVerification = () => {
   const dispatch = useDispatch();
   const { loading, error, token } = useSelector((state) => state.auth);
   const data = useSelector((state) => state.signup);
-
   const datta = useSelector((state) => state.auth.otpFormat);
-  console.log(datta);
+  const Email = useSelector((state) => state.auth.Email);
 
+  // Timer handling with proper cleanup
   useEffect(() => {
     if (resendTimer > 0) {
       const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer); // Cleanup timer on unmount or when resendTimer changes
     }
   }, [resendTimer]);
 
   const handleChange = (index, value) => {
-    if (isNaN(value)) return;
-    let newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
+    if (isNaN(value)) return; // Only allow numbers
+    setOtp((prevOtp) => {
+      const newOtp = [...prevOtp];
+      newOtp[index] = value;
+      return newOtp;
+    });
 
     // Move to next input
     if (value && index < 5) {
@@ -44,12 +46,12 @@ const OTPVerification = () => {
 
   const handlesubmit = () => {
     const otpCode = otp.join("");
-    console.log("OTP Code:", otpCode);
-    console.log(data);
-    if (datta == "Login") {
+    if (datta === "Login") {
+        console.log("Login OTP Code:", otpCode);
+        console.log("Email:", Email);
       dispatch(
         verifyLoginOtpUser({
-          Email: data.Email,
+          Email: Email,
           otp: otpCode,
         })
       );
@@ -71,27 +73,21 @@ const OTPVerification = () => {
     setOtp(["", "", "", "", "", ""]);
   };
 
-  return datta && (
+  return   (
     <div
       className={`flex justify-center items-center min-h-screen w-full p-4 transition-colors duration-300 ${
-        theme === "light"
-          ? "bg-light-300 text-dark-300"
-          : "bg-dark-100 text-light-300"
+        theme === "light" ? "bg-light-300 text-dark-300" : "bg-dark-100 text-light-300"
       }`}
     >
       <div className="flex flex-col md:flex-row w-full max-w-4xl shadow-lg rounded-xl overflow-hidden bg-opacity-90">
         {/* Left Side - Illustration / OTP Info */}
         <div
           className={`hidden md:flex flex-1 flex-col items-center justify-center text-center p-8 ${
-            theme === "light"
-              ? "bg-gradient-to-br from-light-200 to-light-300"
-              : "bg-gradient-to-br from-dark-200 to-dark-300"
+            theme === "light" ? "bg-gradient-to-br from-light-200 to-light-300" : "bg-gradient-to-br from-dark-200 to-dark-300"
           }`}
         >
           <h2 className="text-3xl font-bold">Verify Your OTP</h2>
-          <p className="mt-4 text-lg italic">
-            "Security is not a product, but a process." - Bruce Schneier
-          </p>
+          <p className="mt-4 text-lg italic">"Security is not a product, but a process." - Bruce Schneier</p>
         </div>
 
         {/* Right Side - OTP Form */}
@@ -129,9 +125,7 @@ const OTPVerification = () => {
           <button
             onClick={handlesubmit}
             className={`mx-auto py-3 rounded font-semibold w-full sm:w-[60%] text-lg transition ${
-              theme === "light"
-                ? "bg-green-500 hover:bg-green-600 text-white"
-                : "bg-green-700 hover:bg-green-800 text-white"
+              theme === "light" ? "bg-green-500 hover:bg-green-600 text-white" : "bg-green-700 hover:bg-green-800 text-white"
             }`}
           >
             Verify OTP
@@ -141,10 +135,7 @@ const OTPVerification = () => {
             {resendTimer > 0 ? (
               <p>Resend OTP in {resendTimer}s</p>
             ) : (
-              <button
-                onClick={resendOTP}
-                className="text-blue-500 hover:underline"
-              >
+              <button onClick={resendOTP} className="text-blue-500 hover:underline">
                 Resend OTP
               </button>
             )}

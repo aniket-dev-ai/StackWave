@@ -10,6 +10,7 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const Login = () => {
     Password: "",
     Phone: "",
   });
+  const navigate = useNavigate();
 
   const [useEmail, setUseEmail] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,6 +36,7 @@ const Login = () => {
     e.preventDefault();
     console.log("User Data:", userData);
     dispatch(loginUser(userData));
+    navigate("/otp")
   };
 
   const themeClasses =
@@ -64,15 +67,24 @@ const Login = () => {
           </p>
           <p className="mt-8 text-lg font-medium">
             Don't have an account?{" "}
-            <a href="#" className="text-green-500 hover:text-green-600 transition">
+            <Link
+              to="/"
+              className="text-green-500 hover:text-green-600 transition"
+            >
               Sign up here
-            </a>
+            </Link>
           </p>
         </div>
 
         {/* Right Side - Login Form */}
-        <div className={`flex-1 p-10 flex flex-col justify-center ${theme === "light" ? "bg-light-200" : "bg-dark-200"}`}>
-          <h2 className="text-3xl font-bold mb-6 text-center">Login to Your Account</h2>
+        <div
+          className={`flex-1 p-10 flex flex-col justify-center ${
+            theme === "light" ? "bg-light-200" : "bg-dark-200"
+          }`}
+        >
+          <h2 className="text-3xl font-bold mb-6 text-center">
+            Login to Your Account
+          </h2>
 
           {/* Toggle Email/Phone */}
           <div className="flex justify-center mb-4">
@@ -86,7 +98,9 @@ const Login = () => {
             </button>
             <button
               className={`px-4 py-2 rounded-r ${
-                !useEmail ? "bg-green-500 text-white" : "bg-light-400 text-white"
+                !useEmail
+                  ? "bg-green-500 text-white"
+                  : "bg-light-400 text-white"
               }`}
               onClick={() => setUseEmail(false)}
             >
@@ -95,7 +109,10 @@ const Login = () => {
           </div>
 
           {/* Login Form */}
-          <form className="w-full max-w-lg mx-auto space-y-4" onSubmit={handleSubmit}>
+          <form
+            className="w-full max-w-lg mx-auto space-y-4"
+            onSubmit={handleSubmit}
+          >
             <input
               type={useEmail ? "email" : "tel"}
               name={useEmail ? "Email" : "Phone"}
@@ -129,33 +146,65 @@ const Login = () => {
                 <input type="checkbox" className="mr-2" />
                 <span>Remember me</span>
               </div>
-              <a href="#" className="text-blue-500 hover:underline">
+              <Link
+                to={"/resetpassword"}
+                className="text-blue-500 hover:underline"
+              >
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
-            <button
-              type="submit"
-              className={`w-full text-white py-3 rounded font-semibold text-lg transition ${
-                theme === "light" ? "bg-green-500 hover:bg-green-600" : "bg-green-700 hover:bg-green-800"
-              }`}
-            >
-              Login
-            </button>
+            
+              <button
+                type="submit"
+                className={`w-full text-white py-3 rounded font-semibold text-lg transition ${
+                  theme === "light"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-green-700 hover:bg-green-800"
+                }`}
+              >
+                Login
+              </button>
+             
           </form>
 
-          <div className="text-center text-gray-500 dark:text-gray-300 my-4">OR</div>
+          <div className="text-center text-gray-500 dark:text-gray-300 my-4">
+            OR
+          </div>
 
           {/* OAuth Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-4">
             {[
-              { Icon: FaGoogle, color: "bg-blue-500", hover: "hover:bg-blue-600" },
-              { Icon: FaFacebook, color: "bg-blue-700", hover: "hover:bg-blue-800" },
-              { Icon: FaGithub, color: "bg-gray-800", hover: "hover:bg-gray-900" },
-              { Icon: FaDiscord, color: "bg-purple-600", hover: "hover:bg-purple-700" },
-              { Icon: FaReddit, color: "bg-red-600", hover: "hover:bg-red-700" },
+              {
+                Icon: FaGoogle,
+                color: "bg-blue-500",
+                hover: "hover:bg-blue-600",
+              },
+              {
+                Icon: FaFacebook,
+                color: "bg-blue-700",
+                hover: "hover:bg-blue-800",
+              },
+              {
+                Icon: FaGithub,
+                color: "bg-gray-800",
+                hover: "hover:bg-gray-900",
+              },
+              {
+                Icon: FaDiscord,
+                color: "bg-purple-600",
+                hover: "hover:bg-purple-700",
+              },
+              {
+                Icon: FaReddit,
+                color: "bg-red-600",
+                hover: "hover:bg-red-700",
+              },
             ].map(({ Icon, color, hover }, index) => (
-              <button key={index} className={`flex items-center gap-2 ${color} text-white p-4 rounded-full ${hover} transition`}>
+              <button
+                key={index}
+                className={`flex items-center gap-2 ${color} text-white p-4 rounded-full ${hover} transition`}
+              >
                 <Icon />
               </button>
             ))}

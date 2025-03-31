@@ -257,3 +257,130 @@ export const successfullyLogin = async (email, name, time) => {
 
   await transporter.sendMail(mailOptions);
 };
+
+export const PasswordResetSuccess = async (email, name, LoginLink) => {
+    const mailOptions = {
+        from: process.env.GMAIL_USER,
+        to: email,
+        subject: "✅ Your StackWave Password Has Been Reset Successfully!",
+        html: `
+          <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; background-color: #ffffff; border-radius: 10px; border: 1px solid #ddd;">
+            
+            <table width="100%" style="border-spacing: 0;">
+              
+              <tr>
+                <td align="center" style="padding: 20px 0;">
+                  <h1 style="color: #008000; margin: 0;">StackWave Password Reset Successful</h1>
+                  <p style="color: #333; font-size: 16px;">Hello <strong>${name}</strong>,</p>
+                  <p style="color: #333; font-size: 16px;">Your password has been successfully reset. You can now log in with your new password.</p>
+                </td>
+              </tr>
+              
+              <tr>
+                <td style="padding: 20px; text-align: center;">
+                  <h2 style="color: #008000;">🚀 Login Now</h2>
+                  <p style="font-size: 16px; color: #333;">Click the button below to log in to your account:</p>
+                  <a href="${LoginLink}" style="background-color: #008000; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;">
+                    Login Now
+                  </a>
+                </td>
+              </tr>
+      
+              <tr>
+                <td style="padding: 20px; text-align: center;">
+                  <h3 style="color: #d9534f;">Didn't reset your password?</h3>
+                  <p style="font-size: 16px; color: #333;">If you didn’t request this change, please secure your account immediately.</p>
+                  <a href="https://stackwave.com/security" style="background-color: #d9534f; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;">
+                    Secure My Account
+                  </a>
+                </td>
+              </tr>
+      
+              <tr>
+                <td style="padding: 20px; text-align: center; color: #333; font-size: 14px;">
+                  <p>If you need help, contact us at <a href="mailto:support@stackwave.com" style="color: #008000; text-decoration: none;">support@stackwave.com</a></p>
+                </td>
+              </tr>
+      
+              <tr>
+                <td style="background-color: #008000; color: #ffffff; text-align: center; padding: 10px 20px; border-radius: 0 0 10px 10px;">
+                  <p style="margin: 0; font-size: 14px;">© 2025 StackWave. All Rights Reserved.</p>
+                </td>
+              </tr>
+      
+            </table>
+            
+          </div>
+        `,
+      };
+      
+      
+
+    console.log("Sending email to:", email);
+
+  await transporter.sendMail(mailOptions);
+}
+export const sendPasswordReset = async (email, name, resetLink) => {
+    const mailOptions = {
+        from: process.env.GMAIL_USER,
+        to: email,
+        subject: "🔒 Reset Your StackWave Password",
+        html: `
+          <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; background-color: #ffffff; border-radius: 10px; border: 1px solid #ddd;">
+            
+            <table width="100%" style="border-spacing: 0;">
+              
+              <tr>
+                <td align="center" style="padding: 20px 0;">
+                  <h1 style="color: #d9534f; margin: 0;">StackWave Password Reset</h1>
+                  <p style="color: #333; font-size: 16px;">Hello <strong>${name}</strong>,</p>
+                  <p style="color: #333; font-size: 16px;">You recently requested to reset your password for your StackWave account.</p>
+                </td>
+              </tr>
+              
+              <tr>
+                <td style="padding: 20px; text-align: center;">
+                  <h2 style="color: #d9534f;">🔑 Reset Your Password</h2>
+                  <p style="font-size: 16px; color: #333;">Click the button below to reset your password:</p>
+                  <a href="${resetLink}" style="background-color: #d9534f; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;">
+                    Reset My Password
+                  </a>
+                  <p style="font-size: 14px; color: #777;">This link will expire in 15 minutes.</p>
+                </td>
+              </tr>
+      
+              <tr>
+                <td style="padding: 20px; text-align: center;">
+                  <h3 style="color: #008000;">Need Help?</h3>
+                  <p style="font-size: 16px; color: #333;">If you didn’t request this, you can safely ignore this email.</p>
+                  <p style="font-size: 16px; color: #333;">If you have any questions, feel free to contact our support team.</p>
+                  <a href="mailto:support@stackwave.com" style="color: #008000; font-size: 16px; text-decoration: none;">
+                    Contact Support
+                  </a>
+                </td>
+              </tr>
+      
+              <tr>
+                <td style="padding: 20px; text-align: center; color: #333; font-size: 14px;">
+                  <p>If you’re having trouble clicking the button, copy and paste this link in your browser:</p>
+                  <p style="word-break: break-all; color: #555;">${resetLink}</p>
+                </td>
+              </tr>
+      
+              <tr>
+                <td style="background-color: #008000; color: #ffffff; text-align: center; padding: 10px 20px; border-radius: 0 0 10px 10px;">
+                  <p style="margin: 0; font-size: 14px;">© 2025 StackWave. All Rights Reserved.</p>
+                </td>
+              </tr>
+      
+            </table>
+            
+          </div>
+        `,
+      };
+      
+
+    console.log("Sending email to:", email);
+
+  await transporter.sendMail(mailOptions);
+}

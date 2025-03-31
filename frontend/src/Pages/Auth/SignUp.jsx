@@ -14,14 +14,15 @@ import {
   setPassword,
   setPhone,
 } from "../../Redux/SLice/SignUpSlice";
-
+import { Link, useNavigate } from "react-router-dom";
 const Signup = () => {
-  const [userData, setUserData] = useState({
+    const [userData, setUserData] = useState({
     Name: "",
     Email: "",
     Password: "",
     Phone: "",
-  });
+});
+const navigate = useNavigate()
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
   const theme = useSelector((state) => state.theme.mode);
@@ -41,6 +42,7 @@ const Signup = () => {
     dispatch(setPhone(userData.Phone)); // Save name in Redux store
 
     dispatch(registerUser(userData));
+    navigate("/otp"); // Redirect to OTP page after signup
   };
 
   return (
@@ -67,12 +69,12 @@ const Signup = () => {
 
           <p className="mt-8 text-lg font-medium">
             Already have an account?{" "}
-            <a
-              href="#"
+            <Link
+                to="/login"
               className="text-green-500 hover:text-green-600 transition"
             >
               Login here
-            </a>
+            </Link>
           </p>
         </div>
 

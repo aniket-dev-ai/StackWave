@@ -2,8 +2,10 @@ import OTP from "../models/OTP.js";
 import User from "../models/User.js";
 import { getDeviceInfo } from "../utils/DeviceHelper.js";
 import {
+    PasswordResetSuccess,
   SendAccountCreationConfirmation,
   sendOTP,
+  sendPasswordReset,
   sentLoginOtp,
   successfullyLogin,
 } from "../utils/emailSender.js";
@@ -130,6 +132,10 @@ export const login = async (req, res) => {
 export const loginVerifyOtp = async (req, res) => {
   try {
     const { Email, otp } = req.body;
+    if (!Email || !otp) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    console.log(Email, otp);
 
     const otpEntry = await OTP.findOne({ email: Email, otp });
     if (!otpEntry) {
@@ -171,3 +177,60 @@ export const loginVerifyOtp = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const resetpasswordLinkGenerate = async (req, res) => {
+    try {
+        const {Email} = req.body;
+        if (!Email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+        const existingUser = await User.findByEmailorPhone(Email, Email);
+        if (!existingUser) {
+            return res.status(400).json({ message: "Invalid Email" });
+        }
+
+        const token = existingUser.generateJWT();
+        console.log(token);
+        
+        const resetlink = `http://localhost:5173/resetpassword/${token}`;
+        console.log(resetlink);
+
+        await sendPasswordReset(Email,  existingUser.Name , resetlink);
+
+        res.status(200).json({
+            message: "Password reset link sent to your email =>" + Email,
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+export const resetpassword = async (req, res) => {
+    try {
+        const {Password} = req.body;
+        if (!Password) {
+            return res.status(400).json({ message: "Password is required" });
+        }
+        console.log(req.user);
+        console.log(Password);
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+        user.Password = await user.PasswordHash(Password);
+        await user.save();
+        console.log("Password updated successfully");
+
+        const LoginLink = `http://localhost:5173/login`;
+        console.log(LoginLink);
+        await PasswordResetSuccess(user.Email, user.Name , LoginLink);
+        res.status(200).json({
+            message: "Password updated successfully",
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+}
