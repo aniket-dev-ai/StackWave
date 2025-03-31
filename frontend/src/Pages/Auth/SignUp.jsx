@@ -16,13 +16,13 @@ import {
 } from "../../Redux/SLice/SignUpSlice";
 import { Link, useNavigate } from "react-router-dom";
 const Signup = () => {
-    const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState({
     Name: "",
     Email: "",
     Password: "",
     Phone: "",
-});
-const navigate = useNavigate()
+  });
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
   const theme = useSelector((state) => state.theme.mode);
@@ -70,7 +70,7 @@ const navigate = useNavigate()
           <p className="mt-8 text-lg font-medium">
             Already have an account?{" "}
             <Link
-                to="/login"
+              to="/login"
               className="text-green-500 hover:text-green-600 transition"
             >
               Login here
@@ -169,19 +169,6 @@ const navigate = useNavigate()
                   : "bg-dark-300 border-gray-600 focus:border-green-400"
               }`}
             ></textarea>
-
-            <select
-              className={`w-full px-4 py-3 border rounded transition ${
-                theme === "light"
-                  ? "bg-light-100 text-green-800 border-gray-300 focus:border-green-500"
-                  : "bg-dark-300 border-gray-600 focus:border-green-400"
-              }`}
-            >
-              <option value="">Select Role</option>
-              <option value="developer">Developer</option>
-              <option value="designer">Designer</option>
-              <option value="manager">Manager</option>
-            </select>
 
             <div className="flex items-center">
               <input type="checkbox" className="mr-2" />
