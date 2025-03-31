@@ -47,7 +47,10 @@ export const register = async (req, res) => {
 export const registerverifyOTP = async (req, res) => {
   try {
     const { Name, Email, Phone, Password, otp } = req.body;
-
+    if(!Name || !Email || !Phone || !Password || !otp) {
+        res.status(400).json({ message: "All fields are required" });
+    }
+    console.log(Name, Email, Phone, Password, otp);
     const otpEntry = await OTP.findOne({ email: Email, otp });
     if (!otpEntry) {
       return res.status(400).json({ message: "Invalid OTP" });
@@ -113,7 +116,7 @@ export const login = async (req, res) => {
 
     await otpEntry.save();
 
-    await sentLoginOtp(Email, otp , existingUser.Name);
+    await sentLoginOtp(Email, otp, existingUser.Name);
 
     res.status(200).json({
       message: "OTP sent to your email =>" + Email,
@@ -142,13 +145,15 @@ export const loginVerifyOtp = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-  
+
     // 🔹 Login time fetch karo
-    const loginTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+    const loginTime = new Date().toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
     console.log("Login time:", loginTime);
 
     const token = user.generateJWT();
-    await successfullyLogin(Email, user.Name , loginTime);
+    await successfullyLogin(Email, user.Name, loginTime);
     console.log("Login successful");
     res.status(200).json({
       message: "Login successful",

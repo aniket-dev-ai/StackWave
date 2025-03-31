@@ -1,11 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  verifyLoginOtpUser,
+  verifyRegisterOtpUser,
+} from "../../Redux/SLice/AuthSlice";
 
 const OTPVerification = () => {
   const theme = useSelector((state) => state.theme.mode);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [resendTimer, setResendTimer] = useState(30);
   const inputRefs = useRef([]);
+  const dispatch = useDispatch();
+  const { loading, error, token } = useSelector((state) => state.auth);
+  const data = useSelector((state) => state.signup);
+
+  const datta = useSelector((state) => state.auth.otpFormat);
+  console.log(datta);
 
   useEffect(() => {
     if (resendTimer > 0) {
@@ -32,12 +42,36 @@ const OTPVerification = () => {
     }
   };
 
-  const resendOTP = () => {
-    setResendTimer(30);
-    setOtp(["", "", "", "", "", ""]); // Clear OTP inputs
+  const handlesubmit = () => {
+    const otpCode = otp.join("");
+    console.log("OTP Code:", otpCode);
+    console.log(data);
+    if (datta == "Login") {
+      dispatch(
+        verifyLoginOtpUser({
+          Email: data.Email,
+          otp: otpCode,
+        })
+      );
+    } else {
+      dispatch(
+        verifyRegisterOtpUser({
+          Name: data.Name,
+          otp: otpCode,
+          Email: data.Email,
+          Phone: data.Phone,
+          Password: data.Password,
+        })
+      );
+    }
   };
 
-  return (
+  const resendOTP = () => {
+    setResendTimer(30);
+    setOtp(["", "", "", "", "", ""]);
+  };
+
+  return datta && (
     <div
       className={`flex justify-center items-center min-h-screen w-full p-4 transition-colors duration-300 ${
         theme === "light"
@@ -67,7 +101,7 @@ const OTPVerification = () => {
           }`}
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-center">
-            Enter OTP Code
+            Enter {datta} OTP Code
           </h2>
           <p className="text-center text-gray-600 dark:text-gray-400 mb-4 text-sm sm:text-base">
             We sent a 6-digit code to your phone/email.
@@ -93,6 +127,7 @@ const OTPVerification = () => {
           </div>
 
           <button
+            onClick={handlesubmit}
             className={`mx-auto py-3 rounded font-semibold w-full sm:w-[60%] text-lg transition ${
               theme === "light"
                 ? "bg-green-500 hover:bg-green-600 text-white"
