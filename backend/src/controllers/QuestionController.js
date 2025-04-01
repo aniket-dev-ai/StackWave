@@ -32,8 +32,13 @@ export const createQuestion = async (req, res) => {
 export const getAllQuestions = async (req, res) => {
   try {
     const questions = await QuestionSchema.find()
-      .populate("CreatedBy", "Name Email")
+      .populate("CreatedBy", "Name")  // User schema mein 'name' ko reference kar rahe ho
+      .populate("Tags", "tag")  // Tag schema mein 'tag' field
+      .populate("Answer", "Answer")  // Answer schema mein 'answer' field
       .sort({ CreatedAt: -1 });
+
+      console.log("Fetched questions:", questions); // Debugging ke liye
+
     res.status(200).json(questions);
   } catch (error) {
     console.error("Error fetching questions:", error);

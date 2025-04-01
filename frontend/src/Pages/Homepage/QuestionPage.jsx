@@ -12,7 +12,6 @@ const QuestionsPage = () => {
 
   const questionData = useSelector((state) => state.answers.list); // Directly get answers from Redux
 
-  // Fetch the answers when the component is mounted or the questionId changes
   useEffect(() => {
     dispatch(fetchAnswers(questionId));
   }, [dispatch, questionId]);

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios"; 
 
 const API = axios.create({
   baseURL: "http://localhost:5000/api/auth",
@@ -7,17 +7,31 @@ const API = axios.create({
   },
 });
 
-// 🔹 Generic Function for API Requests
-const request = async (method, endpoint, data) => {
+// 🔹 Generic Function for API Requests (Fixed)
+const request = async (method, endpoint, data = null) => {
   try {
-    const response = await API[method](endpoint, data);
+    // 🔹 Token Fetch Karna
+    const token = localStorage.getItem("token");
+
+    // 🔹 Token Ko Headers Me Set Karna
+    if (token) {
+      API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+
+    // 🔹 GET Requests Me `data` Pass Na Karna
+    const response =
+      method === "get"
+        ? await API[method](endpoint) // GET requests me data pass nahi hota
+        : await API[method](endpoint, data);
+
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.log(error.response?.data || error.message);
+    console.error("Error:", error.response?.data || error.message);
     throw error.response?.data || "Something went wrong!";
   }
 };
+
 
 // 🔹 Auth API Functions
 export const register = (userData) => request("post", "/register", userData);
@@ -43,3 +57,4 @@ export const resetPassword = (tokens, Passwords) => {
   // Change: Wrap the Password in an object before sending it in the request body
   return request("post", `/resetpassword/${token}`, { Password });
 };
+export const logout = () => request("post", "/logout");

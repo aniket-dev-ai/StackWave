@@ -1,6 +1,5 @@
 import request from "./api";
 
-// 🔹 Question APIs
 export const createQuestion = (data) =>
   request("post", "/question/create", data);
 export const getAllQuestions = () => request("get", "/question/getall");

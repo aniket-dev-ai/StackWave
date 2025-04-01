@@ -66,7 +66,7 @@ const Login = () => {
           <p className="mt-8 text-lg font-medium">
             Don't have an account?{" "}
             <Link
-              to="/"
+              to="/signup"
               className="text-green-500 hover:text-green-600 transition"
             >
               Sign up here

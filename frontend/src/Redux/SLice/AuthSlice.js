@@ -6,6 +6,7 @@ import {
   verifyLoginOtp,
   resetPassword,
   generateResetPasswordLink,
+  logout,
 } from "./API/AuthApi";
 
 // 🔹 Generic Async Function Creator
@@ -37,6 +38,7 @@ export const resetPasswordUser = createAuthThunk(
   "auth/resetpassword/",
   resetPassword
 );
+export const logoutUser = createAuthThunk("auth/logout", logout);
 
 // 🔹 Initial State
 const initialState = {
@@ -94,14 +96,7 @@ const handleFulfilled = (state, action, type) => {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.token = null;
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, handlePending)
@@ -148,9 +143,19 @@ const authSlice = createSlice({
       .addCase(resetPasswordUser.fulfilled, (state) =>
         handleFulfilled(state, {}, "resetPassword")
       )
-      .addCase(resetPasswordUser.rejected, handleRejected);
+      .addCase(resetPasswordUser.rejected, handleRejected)
+      .addCase(logoutUser.pending, handlePending)
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.loading = false;
+        state.user = null;
+        state.token = null;
+        state.otpFormat = "";
+        state.resetLinkSent = false;
+        state.passwordResetSuccess = false;
+        state.Email = "";
+        localStorage.clear(); // Ensure all auth-related data is cleared
+      });
   },
 });
 
-export const { logout } = authSlice.actions;
 export default authSlice.reducer;

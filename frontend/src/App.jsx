@@ -8,6 +8,7 @@ import NewPassword from "./Pages/Auth/NewPassword";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./Pages/Homepage/HomePage";
 import QuestionsPage from "./Pages/Homepage/QuestionPage";
+import AskQuestion from "./Pages/Homepage/AskQuestion";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
   <Route path="/otp" element={<OTPVerification />} />
   <Route path="/resetpassword" element={<ResetPassword />} />
   <Route path="/resetpassword/:token" element={<NewPassword />} />
+  <Route path="/ask" element={<AskQuestion />} />
  </Routes>
     </div>
   );

@@ -17,9 +17,12 @@ export const fetchQuestionById = createAsyncThunk(
     return await getQuestionById(id);
   }
 );
-export const addQuestion = createAsyncThunk("questions/add", async (data) => {
-  return await createQuestion(data);
-});
+export const addQuestion = createAsyncThunk(
+  "questions/create",
+  async (data) => {
+    return await createQuestion(data);
+  }
+);
 export const modifyQuestion = createAsyncThunk(
   "questions/update",
   async ({ id, data }) => {
@@ -51,6 +54,18 @@ const questionSlice = createSlice({
       })
       .addCase(removeQuestion.fulfilled, (state, action) => {
         state.list = state.list.filter((q) => q._id !== action.meta.arg);
+      })
+      .addCase(removeQuestion.rejected, (state, action) => {
+        state.error = action.error.message;
+        alert(
+          "Error deleting question: Hey You can't delete this question because you are not the owner of this question"
+        );
+      })
+      .addCase(addQuestion.fulfilled, (state, action) => {
+        state.list.push(action.payload);
+      })
+      .addCase(addQuestion.rejected, (state, action) => {
+        state.error = action.error.message;
       })
       .addMatcher(
         (action) => action.type.endsWith("/pending"),
