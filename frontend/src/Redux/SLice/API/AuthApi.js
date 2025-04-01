@@ -29,7 +29,7 @@ export const verifyLoginOtp = (email, otpData) => {
   const Email = email.Email;
   console.log("otpData : ", email.otp);
   const otp = email.otp;
-  request("post", "/loginVerifyOtp", { Email, otp });
+  return request("post", "/loginVerifyOtp", { Email, otp });
 };
 export const generateResetPasswordLink = (Email) =>
   request("post", "/resetpasswordLinkGenerate", Email);

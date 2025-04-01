@@ -1,0 +1,52 @@
+[
+  {
+    "_id": { "$oid": "660000000000000000000001" },
+    "Question": "How to implement authentication in a MERN stack application?",
+    "Description": "I am working on a MERN stack project and need to implement authentication. Should I use JWT or session-based authentication? Also, how can I secure API routes properly?",
+    "Answer": [
+      { "$oid": "660000000000000000000011" },
+      { "$oid": "660000000000000000000012" },
+      { "$oid": "660000000000000000000013" }
+    ],
+    "CreatedBy": { "$oid": "6600000000000000000000A1" },
+    "Tags": ["MERN", "Authentication", "JWT", "Security"],
+    "upvotes": 3,
+    "downvotes": 1,
+    "CreatedAt": { "$date": "2025-04-01T10:00:00.000Z" },
+    "UpdatedAt": { "$date": "2025-04-01T10:05:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "660000000000000000000002" },
+    "Question": "What is the best way to optimize MongoDB queries?",
+    "Description": "I have a large dataset and my MongoDB queries are slow. How can I optimize them for better performance?",
+    "Answer": [
+      { "$oid": "660000000000000000000021" },
+      { "$oid": "660000000000000000000022" }
+    ],
+    "CreatedBy": { "$oid": "6600000000000000000000A2" },
+    "Tags": ["MongoDB", "Optimization", "Indexes", "Performance"],
+    "upvotes": 5,
+    "downvotes": 0,
+    "CreatedAt": { "$date": "2025-04-01T10:10:00.000Z" },
+    "UpdatedAt": { "$date": "2025-04-01T10:15:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "660000000000000000000003" },
+    "Question": "How does React handle state management?",
+    "Description": "Should I use Redux, Context API, or another solution for state management in React?",
+    "Answer": [
+      { "$oid": "660000000000000000000031" },
+      { "$oid": "660000000000000000000032" },
+      { "$oid": "660000000000000000000033" }
+    ],
+    "CreatedBy": { "$oid": "6600000000000000000000A3" },
+    "Tags": ["React", "State Management", "Redux", "Context API"],
+    "upvotes": 4,
+    "downvotes": 2,
+    "CreatedAt": { "$date": "2025-04-01T10:20:00.000Z" },
+    "UpdatedAt": { "$date": "2025-04-01T10:25:00.000Z" },
+    "__v": 0
+  }
+]

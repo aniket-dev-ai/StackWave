@@ -39,10 +39,11 @@ export const addAnswer = async (req, res) => {
 export const getAnswersForQuestion = async (req, res) => {
   try {
     const Question = req.params.questionId;
+    console.log("Fetching answers for question:", Question);
     const answers = await AnswerSchema.find({ Question })
       .populate("CreatedBy", "Name Email")
       .sort({ CreatedAt: -1 });
-
+    console.log("Fetched answers:", answers);
     if (!answers) {
       return res
         .status(404)

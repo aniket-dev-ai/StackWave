@@ -18,7 +18,6 @@ const Login = () => {
   const theme = useSelector((state) => state.theme.mode);
 
   const [userData, setUserData] = useState({
-    Name: "",
     Email: "",
     Password: "",
     Phone: "",
@@ -33,8 +32,7 @@ const Login = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("User Data:", userData);
+    e.preventDefault(); 
     dispatch(loginUser(userData));
     navigate("/otp")
   };

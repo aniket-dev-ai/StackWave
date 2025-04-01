@@ -2,7 +2,7 @@ import OTP from "../models/OTP.js";
 import User from "../models/User.js";
 import { getDeviceInfo } from "../utils/DeviceHelper.js";
 import {
-    PasswordResetSuccess,
+  PasswordResetSuccess,
   SendAccountCreationConfirmation,
   sendOTP,
   sendPasswordReset,
@@ -49,8 +49,8 @@ export const register = async (req, res) => {
 export const registerverifyOTP = async (req, res) => {
   try {
     const { Name, Email, Phone, Password, otp } = req.body;
-    if(!Name || !Email || !Phone || !Password || !otp) {
-        res.status(400).json({ message: "All fields are required" });
+    if (!Name || !Email || !Phone || !Password || !otp) {
+      res.status(400).json({ message: "All fields are required" });
     }
     console.log(Name, Email, Phone, Password, otp);
     const otpEntry = await OTP.findOne({ email: Email, otp });
@@ -122,6 +122,13 @@ export const login = async (req, res) => {
 
     res.status(200).json({
       message: "OTP sent to your email =>" + Email,
+      user: {
+        id: existingUser._id,
+        Name: existingUser.Name,
+        Email: existingUser.Email,
+        Phone: existingUser.Phone,
+        Role: existingUser.Role,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -151,6 +158,7 @@ export const loginVerifyOtp = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
+    console.log(user);
 
     // 🔹 Login time fetch karo
     const loginTime = new Date().toLocaleString("en-US", {
@@ -159,19 +167,10 @@ export const loginVerifyOtp = async (req, res) => {
     console.log("Login time:", loginTime);
 
     const token = user.generateJWT();
+    console.log("Token:", token);
     await successfullyLogin(Email, user.Name, loginTime);
     console.log("Login successful");
-    res.status(200).json({
-      message: "Login successful",
-      token,
-      user: {
-        id: user._id,
-        Name: user.Name,
-        Email: user.Email,
-        Phone: user.Phone,
-        Role: user.Role,
-      },
-    });
+    res.status(200).json({ user, token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -179,58 +178,57 @@ export const loginVerifyOtp = async (req, res) => {
 };
 
 export const resetpasswordLinkGenerate = async (req, res) => {
-    try {
-        const {Email} = req.body;
-        if (!Email) {
-            return res.status(400).json({ message: "Email is required" });
-        }
-        const existingUser = await User.findByEmailorPhone(Email, Email);
-        if (!existingUser) {
-            return res.status(400).json({ message: "Invalid Email" });
-        }
-
-        const token = existingUser.generateJWT();
-        console.log(token);
-        
-        const resetlink = `http://localhost:5173/resetpassword/${token}`;
-        console.log(resetlink);
-
-        await sendPasswordReset(Email,  existingUser.Name , resetlink);
-
-        res.status(200).json({
-            message: "Password reset link sent to your email =>" + Email,
-        });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error" });
+  try {
+    const { Email } = req.body;
+    if (!Email) {
+      return res.status(400).json({ message: "Email is required" });
     }
-}
+    const existingUser = await User.findByEmailorPhone(Email, Email);
+    if (!existingUser) {
+      return res.status(400).json({ message: "Invalid Email" });
+    }
+
+    const token = existingUser.generateJWT();
+    console.log(token);
+
+    const resetlink = `http://localhost:5173/resetpassword/${token}`;
+    console.log(resetlink);
+
+    await sendPasswordReset(Email, existingUser.Name, resetlink);
+
+    res.status(200).json({
+      message: "Password reset link sent to your email =>" + Email,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 export const resetpassword = async (req, res) => {
-    try {
-        const {Password} = req.body;
-        if (!Password) {
-            return res.status(400).json({ message: "Password is required" });
-        }
-        console.log(req.user);
-        console.log(Password);
-        const user = await User.findById(req.user.id);
-        if (!user) {
-            return res.status(400).json({ message: "User not found" });
-        }
-        user.Password = await user.PasswordHash(Password);
-        await user.save();
-        console.log("Password updated successfully");
-
-        const LoginLink = `http://localhost:5173/login`;
-        console.log(LoginLink);
-        await PasswordResetSuccess(user.Email, user.Name , LoginLink);
-        res.status(200).json({
-            message: "Password updated successfully",
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error" });
+  try {
+    const { Password } = req.body;
+    if (!Password) {
+      return res.status(400).json({ message: "Password is required" });
     }
-}
+    console.log(req.user);
+    console.log(Password);
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    user.Password = await user.PasswordHash(Password);
+    await user.save();
+    console.log("Password updated successfully");
+
+    const LoginLink = `http://localhost:5173/login`;
+    console.log(LoginLink);
+    await PasswordResetSuccess(user.Email, user.Name, LoginLink);
+    res.status(200).json({
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

@@ -40,8 +40,8 @@ export const resetPasswordUser = createAuthThunk(
 
 // 🔹 Initial State
 const initialState = {
-  user: null,
-  token: null,
+  user: localStorage.getItem("user"),
+  token: localStorage.getItem("token"),
   loading: false,
   error: null,
   otpFormat: "",
@@ -71,15 +71,13 @@ const handleFulfilled = (state, action, type) => {
       state.otpFormat = "Register";
       break;
     case "login":
-      (state.otpFormat = "Login"), (state.Email = action.meta.arg.Email);
-      console.log(state);
+      console.log(action);
+      (state.otpFormat = "Login"), (state.Email = action.payload.user.Email);
       break;
     case "verifyRegisterOtp":
     case "verifyLoginOtp":
-      state.token = action.payload.token;
-      state.user = action.payload.user;
-      localStorage.setItem("token", action.payload.token);
-      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      console.log(action);
+      console.log(state);
       break;
     case "resetPasswordLinkGenerate":
       state.resetLinkSent = true;
@@ -125,9 +123,19 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, handleRejected)
 
       .addCase(verifyLoginOtpUser.pending, handlePending)
-      .addCase(verifyLoginOtpUser.fulfilled, (state, action) =>
-        handleFulfilled(state, action, "verifyLoginOtp")
-      )
+      .addCase(verifyLoginOtpUser.fulfilled, (state, action) => {
+        console.log("verifyLoginOtpUser Success Payload:", action.payload); // Check response
+        if (action.payload && action.payload.token) {
+          state.loading = false;
+          state.token = action.payload.token;
+          state.user = action.payload.user;
+          localStorage.setItem("token", action.payload.token);
+          localStorage.setItem("user", JSON.stringify(action.payload.user));
+        } else {
+          state.error = "Invalid OTP verification response";
+        }
+      })
+
       .addCase(verifyLoginOtpUser.rejected, handleRejected)
 
       .addCase(resetPasswordLinkGenerateUser.pending, handlePending)
